@@ -9,7 +9,7 @@ public class FooClient {
     public static void main(String[] args) throws Exception {
 
         HessianProxyFactory proxyFactory = new HessianProxyFactory();
-        FooService service = (FooService) proxyFactory.create(FooService.class, "http://localhost:8080/foo");
+        FooService service = (FooService) proxyFactory.create(FooService.class, "http://localhost:8080/app/foo");
 
         System.out.println(new String(service.getBytes(), "UTF8"));
 
