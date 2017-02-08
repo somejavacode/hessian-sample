@@ -24,6 +24,7 @@ public class TomcatMain {
         if (args.length > 0) {
 //            Connector connector = new Connector();
             Connector connector = tomcat.getConnector();
+            // https://tomcat.apache.org/tomcat-8.0-doc/config/http.html
             connector.setPort(8443);
             connector.setSecure(true);
             connector.setScheme("https");
@@ -33,9 +34,21 @@ public class TomcatMain {
             connector.setAttribute("keystoreType", "JKS");
             // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
             connector.setAttribute("keystoreFile", "../cert/target/classes/server.jks");
-            connector.setAttribute("clientAuth", "false");
+            // "Set to true if you want the SSL stack to require a valid
+            // certificate chain from the client before accepting a connection."
+            if (args.length > 1) {
+                connector.setAttribute("clientAuth", "true");
+            }
             connector.setAttribute("sslProtocol", "TLS");
             connector.setAttribute("protocol", "HTTP/1.1");
+            //http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html
+            // e.g. TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384
+            // pick one "proper" cipher suite
+//            connector.setAttribute("ciphers", "ECDSA,AES256,SHA384");
+//            connector.setAttribute("ciphers", "ECDHE-ECDSA-AES256-GCM-SHA384");
+            connector.setAttribute("ciphers",
+                    "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384," +  // TODO: requires unlimited crypto?
+                    "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256");
 //            tomcat.getService().addConnector(connector);
         }
 

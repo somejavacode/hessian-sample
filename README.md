@@ -16,12 +16,12 @@ mvn clean package
 
 start server:
 ```
-java -jar server/target/tomcat.jar
+java -jar server/target/tomcat.jar [ssl]
 ```
 
 run client (in a second shell):
 ```
-java -jar client/target/client.jar
+java -jar client/target/client.jar [ssl]
 ```
 
 Note: the executable jars were build with maven-shade-plugin. this method is "cheap", it might fail im more complex cases.

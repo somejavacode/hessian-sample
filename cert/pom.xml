@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <!-- synthetic artifact, ugly hack! why? javac command line is working -->
+            <!-- synthetic artifact, TODO: ugly hack! why? javac command line is working -->
             <groupId>com.sun</groupId>
             <artifactId>rt-jar</artifactId>
             <version>1.0</version>
@@ -37,6 +37,9 @@
                         <configuration>
                             <classpathScope>test</classpathScope>
                             <mainClass>CertGenerator</mainClass>
+                            <arguments>
+                                <argument>clientCert</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
