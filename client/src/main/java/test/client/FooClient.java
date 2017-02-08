@@ -14,7 +14,7 @@ public class FooClient {
         if (args.length > 0) {
             // TODO: not elegant via system properties
             System.setProperty("java.protocol.handler.pkgs", "javax.net.ssl");
-            System.setProperty("javax.net.ssl.trustStore", "client.jks");
+            System.setProperty("javax.net.ssl.trustStore", "cert/target/classes/client.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", "secret2");
             service = (FooService) proxyFactory.create(FooService.class, "https://localhost:8443/app/foo");
         }

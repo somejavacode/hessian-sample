@@ -5,6 +5,8 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
 
 import javax.servlet.Servlet;
 import java.io.File;
@@ -29,30 +31,41 @@ public class TomcatMain {
             connector.setAttribute("keyAlias", "server");
             connector.setAttribute("keystorePass", "secret");
             connector.setAttribute("keystoreType", "JKS");
-            connector.setAttribute("keystoreFile", "../server.jks"); // hack
+            // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
+            connector.setAttribute("keystoreFile", "../cert/target/classes/server.jks");
             connector.setAttribute("clientAuth", "false");
             connector.setAttribute("sslProtocol", "TLS");
             connector.setAttribute("protocol", "HTTP/1.1");
-            connector.setAttribute("maxThreads", "200");
 //            tomcat.getService().addConnector(connector);
         }
 
-//        tomcat.getService().addConnector(connector);
         // needed for "work" dir etc..
         tomcat.setBaseDir(System.getProperty("java.io.tmpdir") + File.separator + "tomcat.tmp");
 
         File docBase = new File(".");  // only needed for "statics", just use working path path for now
         Context ctx = tomcat.addContext("/app", docBase.getAbsolutePath());
 
-        final String servletName = "foo-servlet";
+        String servletName = "foo-servlet";
         Servlet servlet = new HessianServlet();
         Wrapper wrapper = Tomcat.addServlet(ctx, servletName, servlet);
         // same parameters as in web.xml
         wrapper.addInitParameter("home-api", "test.api.FooService");
         wrapper.addInitParameter("home-class", "test.server.FooServiceImpl");
         wrapper.setLoadOnStartup(1);
-
         ctx.addServletMappingDecoded("/foo", servletName);
+
+        // add log filter
+        FilterDef filterDef = new FilterDef();
+        String filterName ="log";
+        filterDef.setFilterName(filterName);
+        filterDef.setFilterClass(LogFilter.class.getName());
+        ctx.addFilterDef(filterDef);
+
+        FilterMap filterMap = new FilterMap();
+        filterMap.addServletName(servletName);
+        filterMap.addURLPattern("*");
+        filterMap.setFilterName(filterName);
+        ctx.addFilterMap(filterMap);
 
         tomcat.start();
         tomcat.getServer().await();

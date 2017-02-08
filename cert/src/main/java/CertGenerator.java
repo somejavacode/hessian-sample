@@ -27,16 +27,25 @@ public class CertGenerator {
 //        X509Certificate client = keyGen.getSelfCertificate(new X500Name("CN=client01"), validity);
 //        System.out.println(client);
 
+        String path = ""; // current working directory
+//        System.getProperties().list(System.out);
+
+        String mvnPath = System.getProperty("maven.multiModuleProjectDirectory");
+        if (mvnPath != null) {
+            // TODO: this ins only working with "mvn package" in project root path.
+            path = mvnPath + "/cert/target/classes/";
+        }
+
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(null, null); // initialize
         String alias = "server";
-        String fileName = "server.jks";
+        String fileName = path + "server.jks";
         char[] password = "secret".toCharArray();
         keyStore.setKeyEntry(alias, keyGen.getPrivateKey(), password, new Certificate[] {server});
-        keyStore.store(new FileOutputStream(fileName), password);
+        keyStore.store(new FileOutputStream(fileName), password); // auto flush with vm exit is ugly
 
         keyStore.load(null, null); // initialize again
-        String fileName2 = "client.jks";
+        String fileName2 = path + "client.jks";
         char[] password2 = "secret2".toCharArray();
         keyStore.setCertificateEntry(alias, server); // server as certificate
         keyStore.store(new FileOutputStream(fileName2), password2);
