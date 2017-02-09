@@ -22,7 +22,6 @@ public class TomcatMain {
         tomcat.setPort(8080);
 
         if (args.length > 0) {
-//            Connector connector = new Connector();
             Connector connector = tomcat.getConnector();
             // https://tomcat.apache.org/tomcat-8.0-doc/config/http.html
             connector.setPort(8443);
@@ -41,15 +40,12 @@ public class TomcatMain {
             }
             connector.setAttribute("sslProtocol", "TLS");
             connector.setAttribute("protocol", "HTTP/1.1");
-            //http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html
-            // e.g. TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384
+
+            // http://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html
             // pick one "proper" cipher suite
-//            connector.setAttribute("ciphers", "ECDSA,AES256,SHA384");
-//            connector.setAttribute("ciphers", "ECDHE-ECDSA-AES256-GCM-SHA384");
             connector.setAttribute("ciphers",
-                    "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384," +  // TODO: requires unlimited crypto?
-                    "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256");
-//            tomcat.getService().addConnector(connector);
+                     "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"); // working OK
+//                     "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"); // requires unlimited crypto!
         }
 
         // needed for "work" dir etc..
@@ -68,12 +64,13 @@ public class TomcatMain {
         ctx.addServletMappingDecoded("/foo", servletName);
 
         // add log filter
-        FilterDef filterDef = new FilterDef();
         String filterName ="log";
+        FilterDef filterDef = new FilterDef();
         filterDef.setFilterName(filterName);
         filterDef.setFilterClass(LogFilter.class.getName());
         ctx.addFilterDef(filterDef);
 
+        // map log filter
         FilterMap filterMap = new FilterMap();
         filterMap.addServletName(servletName);
         filterMap.addURLPattern("*");
