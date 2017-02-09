@@ -14,33 +14,20 @@ public class FooClient {
 
         if (args.length > 0) {
 
-            // ssl config for commons http
-
-//            String[] TLS_ENABLED_PROTOCOLS = new String[] {"TLSv1", "TLSv1.1", "TLSv1.2"};
-//            String cipherSuite = null; // or e.g. "TLS_RSA_WITH_AES_128_CBC_SHA256";
-//
-//
-//            // Trust own CA and all self-signed certs
-//            final SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(truststoreFile, truststorePassphrase, new
-//                    TrustSelfSignedStrategy()).loadKeyMaterial(keystoreFile, keystorePassphrase, keystorePassphrase).build();
-//            // define the allowed Cipher Suites
-//            final String[] cipherSuites;
-//            if (cipherSuite == null) {
-//                cipherSuites = sslcontext.getSupportedSSLParameters().getCipherSuites();
-//            } else {
-//                cipherSuites = new String[]{cipherSuite};
-//            }
-//            // only allow TLS protocol versions and, if applicable restrict cipher suites
-//            final SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslcontext, TLS_ENABLED_PROTOCOLS, cipherSuites,
-//                    SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-//
-//            final CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslSocketFactory).build();
-
             // TODO: not elegant via system properties
             // http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html
+
             System.setProperty("java.protocol.handler.pkgs", "javax.net.ssl");
-            System.setProperty("javax.net.ssl.trustStore", "cert/target/classes/client.jks");
+            System.setProperty("javax.net.ssl.trustStore", "cert/target/classes/clientTrust.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", "secret2");
+            // logs a lot...
+            // System.setProperty("javax.net.debug", "ssl");
+            if (args.length > 1) {
+                // http://emo.sourceforge.net/cert-login-howto.html actually does create a client certificate (using "openssl")
+                System.setProperty("javax.net.ssl.keyStore", "cert/target/classes/clientKey.jks");
+                System.setProperty("javax.net.ssl.keyStorePassword", "secret3");
+            }
+
             service = (FooService) proxyFactory.create(FooService.class, "https://localhost:8443/app/foo");
         }
         else {
