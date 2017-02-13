@@ -38,7 +38,7 @@
                             <classpathScope>test</classpathScope>
                             <mainClass>CertGenerator</mainClass>
                             <arguments>
-                                <!--<argument>clientCert</argument>-->
+                                <argument>clientCert</argument>
                             </arguments>
                         </configuration>
                     </execution>

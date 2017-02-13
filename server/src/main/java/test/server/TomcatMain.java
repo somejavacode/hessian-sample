@@ -21,7 +21,10 @@ public class TomcatMain {
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
 
-        if (args.length > 0) {
+        boolean useTLS = args.length > 0;
+        boolean useClientCert = args.length > 1;
+
+        if (useTLS) {
             Connector connector = tomcat.getConnector();
             // https://tomcat.apache.org/tomcat-8.0-doc/config/http.html
             connector.setPort(8443);
@@ -32,17 +35,20 @@ public class TomcatMain {
             connector.setAttribute("keystorePass", "secret");
             connector.setAttribute("keystoreType", "JKS");
             // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
-            connector.setAttribute("keystoreFile", "../cert/target/classes/server.jks");
-            // "Set to true if you want the SSL stack to require a valid
-            // certificate chain from the client before accepting a connection."
-            if (args.length > 1) {
+            connector.setAttribute("keystoreFile", "../cert/target/classes/serverKey.jks");
+            connector.setAttribute("truststorePass", "secret4");
+            connector.setAttribute("truststoreType", "JKS");
+            connector.setAttribute("truststoreFile", "../cert/target/classes/serverTrust.jks");
+            if (useClientCert) {
+                // "Set to true if you want the SSL stack to require a valid
+                // certificate chain from the client before accepting a connection."
                 connector.setAttribute("clientAuth", "true");
             }
-            connector.setAttribute("sslProtocol", "TLS");
+            connector.setAttribute("sslProtocol", "TLSv1.2");
             connector.setAttribute("protocol", "HTTP/1.1");
 
             // http://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html
-            // pick one "proper" cipher suite
+            // pick one single "proper" cipher suite
             connector.setAttribute("ciphers",
                      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"); // working OK
 //                     "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"); // requires unlimited crypto!

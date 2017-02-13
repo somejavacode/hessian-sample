@@ -16,19 +16,19 @@ mvn clean package
 
 start server:
 ```
-java -jar server/target/tomcat.jar [ssl]
+java -jar server/target/tomcat.jar [x] [x]
 ```
 
 run client (in a second shell):
 ```
-java -jar client/target/client.jar [ssl]
+java -jar client/target/client.jar [x] [x]
 ```
 
-Note: the executable jars were build with maven-shade-plugin. this method is "cheap", it might fail im more complex cases.
+Note about arguments:
+add one arbitrary argument [x] to use TLS.
+add two arbitrary arguments [x] [x] to use TLS with client certificate.
 
-### IntelliJ
+Note about jars:
+the executable jars were build with maven-shade-plugin. this method is "cheap", it might fail im more complex cases.
 
-simply open project with parent pom.
 
-TomcatMain: click "Run"
-FooClient: click "Run"
