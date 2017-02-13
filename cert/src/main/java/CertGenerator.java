@@ -24,8 +24,9 @@ public class CertGenerator {
 
 
         CertAndKeyGen keyGen = new CertAndKeyGen("EC", "SHA256WithECDSA");
-        keyGen.generate(384); // in fact: secp384r1, cannot change curve easily
-//        keyGen.generate(256);  // secp256r1
+//         int keybits = 384; // secp384r1, cannot change curve easily
+        int keyBits = 256; // secp256r1
+        keyGen.generate(keyBits);
         PrivateKey serverPrivate = keyGen.getPrivateKey();
 
         int years = 2;
@@ -38,7 +39,7 @@ public class CertGenerator {
         boolean useClientCert = args.length > 0;
 
         // client certificate (issued by server?)
-        keyGen.generate(384); // otherwise same key?
+        keyGen.generate(keyBits);
         PrivateKey clientPrivate = keyGen.getPrivateKey();
         // create certificate signing request (CSR)
         // PKCS10 request = keyGen.getCertRequest(new X500Name("CN=client01"));

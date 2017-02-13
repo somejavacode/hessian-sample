@@ -22,7 +22,9 @@ public class FooClient {
             System.setProperty("java.protocol.handler.pkgs", "javax.net.ssl");
             System.setProperty("javax.net.ssl.trustStore", "cert/target/classes/clientTrust.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", "secret2");
-            System.setProperty("jdk.tls.client.protocol", "TLSv1.2");
+            System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
+            System.setProperty("https.protocols", "TLSv1.2");
+            System.setProperty("https.cipherSuites", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256");
             // logs a lot...
             System.setProperty("javax.net.debug", "ssl");
 
