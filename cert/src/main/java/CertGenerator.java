@@ -33,8 +33,8 @@ public class CertGenerator {
         int years = Constants.TLS_CERT_VALIDITY_YEARS;
         long validity = years * 365 * 24 * 3600; // a year in seconds
         // validity starts "now"
-//        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=server01"), validity);
-        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=" + Constants.TLS_SERVER_DOMAIN), validity);
+        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=server01"), validity);
+//        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=" + Constants.TLS_SERVER_DOMAIN), validity);
         System.out.println(server);
 
         boolean useClientCert = args.length > 0;

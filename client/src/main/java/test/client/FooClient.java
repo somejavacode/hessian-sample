@@ -5,6 +5,9 @@ import com.caucho.hessian.client.HessianProxyFactory;
 import setup.Constants;
 import test.api.FooService;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 public class FooClient {
 
@@ -29,6 +32,13 @@ public class FooClient {
             // logs a lot...
             System.setProperty("javax.net.debug", "ssl");
 
+            // disable host name validation ....
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+
             if (useClientCert) {
                 System.setProperty("javax.net.ssl.keyStore", "cert/target/classes/clientKey.jks");
                 System.setProperty("javax.net.ssl.keyStorePassword", Constants.TLS_CLIENT_KEY_PASS);
@@ -42,4 +52,6 @@ public class FooClient {
 
         System.out.println(new String(service.getBytes(), "UTF8"));
     }
+
+
 }
