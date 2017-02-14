@@ -7,6 +7,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
+import setup.Constants;
 
 import javax.servlet.Servlet;
 import java.io.File;
@@ -27,16 +28,16 @@ public class TomcatMain {
         if (useTLS) {
             Connector connector = tomcat.getConnector();
             // https://tomcat.apache.org/tomcat-8.0-doc/config/http.html
-            connector.setPort(8443);
+            connector.setPort(Constants.TLS_SERVER_PORT);
             connector.setSecure(true);
             connector.setScheme("https");
             connector.setAttribute("SSLEnabled", true);
             connector.setAttribute("keyAlias", "server");
-            connector.setAttribute("keystorePass", "secret");
+            connector.setAttribute("keystorePass", Constants.TLS_SERVER_KEY_PASS);
             connector.setAttribute("keystoreType", "JKS");
             // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
             connector.setAttribute("keystoreFile", "../cert/target/classes/serverKey.jks");
-            connector.setAttribute("truststorePass", "secret4");
+            connector.setAttribute("truststorePass", Constants.TLS_SERVER_TRUST_PASS);
             connector.setAttribute("truststoreType", "JKS");
             connector.setAttribute("truststoreFile", "../cert/target/classes/serverTrust.jks");
             if (useClientCert) {
@@ -49,8 +50,8 @@ public class TomcatMain {
 
             // http://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html
             // pick one single "proper" cipher suite
-            connector.setAttribute("ciphers",
-                     "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"); // working OK
+            connector.setAttribute("ciphers", Constants.TLS_SUITE);
+//                     "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"); // working OK
 //                     "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"); // requires unlimited crypto!
         }
 

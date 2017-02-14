@@ -4,6 +4,7 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
+import setup.Constants;
 import sun.security.tools.keytool.CertAndKeyGen; // using keytool classes here...
 import sun.security.x509.X500Name;
 
@@ -24,16 +25,16 @@ public class CertGenerator {
 
 
         CertAndKeyGen keyGen = new CertAndKeyGen("EC", "SHA256WithECDSA");
-//         int keybits = 384; // secp384r1, cannot change curve easily
-        int keyBits = 256; // secp256r1
+        //   256 : secp256r1, 384: secp384r1, cannot change curve easily
+        int keyBits = Constants.TLS_CERT_KEY_LENGTH;
         keyGen.generate(keyBits);
         PrivateKey serverPrivate = keyGen.getPrivateKey();
 
-        int years = 2;
+        int years = Constants.TLS_CERT_VALIDITY_YEARS;
         long validity = years * 365 * 24 * 3600; // a year in seconds
         // validity starts "now"
 //        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=server01"), validity);
-        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=localhost"), validity);
+        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=" + Constants.TLS_SERVER_DOMAIN), validity);
         System.out.println(server);
 
         boolean useClientCert = args.length > 0;
@@ -63,7 +64,7 @@ public class CertGenerator {
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(null, null); // initialize
         String fileName = path + "serverKey.jks";
-        char[] password = "secret".toCharArray();
+        char[] password = Constants.TLS_SERVER_KEY_PASS.toCharArray();
         // server as key
         keyStore.setKeyEntry(serverAlias, serverPrivate, password, new Certificate[] {server});
         keyStore.store(new FileOutputStream(fileName), password); // auto flush with vm exit is ugly
@@ -71,7 +72,7 @@ public class CertGenerator {
         // client trusts server
         keyStore.load(null, null); // initialize again
         String fileName2 = path + "clientTrust.jks";
-        char[] password2 = "secret2".toCharArray();
+        char[] password2 = Constants.TLS_CLIENT_TRUST_PASS.toCharArray();
         // server as certificate
         keyStore.setCertificateEntry(serverAlias, server);
         keyStore.store(new FileOutputStream(fileName2), password2);
@@ -79,7 +80,7 @@ public class CertGenerator {
         if (useClientCert) {
             keyStore.load(null, null); // initialize again
             String fileName3 = path + "clientKey.jks";
-            char[] password3 = "secret3".toCharArray();
+            char[] password3 = Constants.TLS_CLIENT_KEY_PASS.toCharArray();
             // client as key
             keyStore.setKeyEntry(clientAlias, clientPrivate, password3, new Certificate[] {client});
             keyStore.store(new FileOutputStream(fileName3), password3);
@@ -87,7 +88,7 @@ public class CertGenerator {
             // server trusts client
             keyStore.load(null, null); // initialize again
             String fileName4 = path + "serverTrust.jks";
-            char[] password4 = "secret4".toCharArray();
+            char[] password4 = Constants.TLS_SERVER_TRUST_PASS.toCharArray();
             // client as key
             keyStore.setCertificateEntry(clientAlias, client);
             keyStore.store(new FileOutputStream(fileName4), password4);
