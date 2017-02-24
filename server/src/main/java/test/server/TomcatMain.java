@@ -20,6 +20,10 @@ public class TomcatMain {
     public static void main(String[] args) throws Exception {
 
         Tomcat tomcat = new Tomcat();
+        // needed for "work" dir etc..
+//        tomcat.setBaseDir(System.getProperty("java.io.tmpdir") + File.separator + "tomcat.tmp");
+        tomcat.setBaseDir("./target/tomcat/tmp");
+
         tomcat.setPort(8080);
 
         boolean useTLS = args.length > 0;
@@ -36,10 +40,11 @@ public class TomcatMain {
             connector.setAttribute("keystorePass", Constants.TLS_SERVER_KEY_PASS);
             connector.setAttribute("keystoreType", "JKS");
             // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
-            connector.setAttribute("keystoreFile", "../cert/target/classes/serverKey.jks");
+            // path is relative to baseDir
+            connector.setAttribute("keystoreFile", "../../../cert/target/classes/serverKey.jks");
             connector.setAttribute("truststorePass", Constants.TLS_SERVER_TRUST_PASS);
             connector.setAttribute("truststoreType", "JKS");
-            connector.setAttribute("truststoreFile", "../cert/target/classes/serverTrust.jks");
+            connector.setAttribute("truststoreFile", "../../../cert/target/classes/serverTrust.jks");
             if (useClientCert) {
                 // "Set to true if you want the SSL stack to require a valid
                 // certificate chain from the client before accepting a connection."
@@ -55,10 +60,9 @@ public class TomcatMain {
 //                     "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"); // requires unlimited crypto!
         }
 
-        // needed for "work" dir etc..
-        tomcat.setBaseDir(System.getProperty("java.io.tmpdir") + File.separator + "tomcat.tmp");
 
-        File docBase = new File(".");  // only needed for "statics", just use working path path for now
+        File docBase = new File("./target/tomcat/docs");  // only needed for "statics", just use working path path for now
+        docBase.mkdirs();
         Context ctx = tomcat.addContext("/app", docBase.getAbsolutePath());
 
         String servletName = "foo-servlet";

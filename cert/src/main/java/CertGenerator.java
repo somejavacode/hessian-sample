@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileOutputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -37,7 +38,7 @@ public class CertGenerator {
 //        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=" + Constants.TLS_SERVER_DOMAIN), validity);
         System.out.println(server);
 
-        boolean useClientCert = args.length > 0;
+        boolean useClientCert = args.length > 1;
 
         // client certificate (issued by server?)
         keyGen.generate(keyBits);
@@ -50,13 +51,9 @@ public class CertGenerator {
 
         // todo: create CA for multiple clients
 
-        String path = ""; // current working directory
-
-        String mvnPath = System.getProperty("maven.multiModuleProjectDirectory");
-        if (mvnPath != null) {
-            // TODO: this ins only working with "mvn package" in project root path.
-            path = mvnPath + "/cert/target/classes/";
-        }
+        // args[0] in pom:  ${project.build.directory}
+        // path will be "../cert/target/classes"
+        String path = args[0] + File.separator + "classes" + File.separator;
 
         String serverAlias = "server";
         String clientAlias = "client";

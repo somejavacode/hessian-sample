@@ -30,14 +30,16 @@
                 <executions>
                     <execution>
                         <id>generateCert</id>
-                        <phase>prepare-package</phase><!-- before package -->
+                        <phase>prepare-package</phase><!-- run before package -->
                         <goals>
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <classpathScope>test</classpathScope>
                             <mainClass>CertGenerator</mainClass>
                             <arguments>
+                                <!-- hand over build directory of module cert (i.e. "../cert/target") -->
+                                <argument>${project.build.directory}</argument>
+                                <!-- enable client certificate with second argument -->
                                 <argument>clientCert</argument>
                             </arguments>
                         </configuration>
