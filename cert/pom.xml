@@ -37,9 +37,7 @@
                         <configuration>
                             <mainClass>CertGenerator</mainClass>
                             <arguments>
-                                <!-- hand over build directory of module cert (i.e. "../cert/target") -->
-                                <argument>${project.build.directory}</argument>
-                                <!-- enable client certificate with second argument -->
+                                <!-- enable client certificate with one argument -->
                                 <argument>clientCert</argument>
                             </arguments>
                         </configuration>

@@ -6,6 +6,7 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 import setup.Constants;
+import setup.PathUtil;
 import sun.security.tools.keytool.CertAndKeyGen; // using keytool classes here...
 import sun.security.x509.X500Name;
 
@@ -38,7 +39,7 @@ public class CertGenerator {
 //        X509Certificate server = keyGen.getSelfCertificate(new X500Name("CN=" + Constants.TLS_SERVER_DOMAIN), validity);
         System.out.println(server);
 
-        boolean useClientCert = args.length > 1;
+        boolean useClientCert = args.length > 0;
 
         // client certificate (issued by server?)
         keyGen.generate(keyBits);
@@ -53,7 +54,7 @@ public class CertGenerator {
 
         // args[0] in pom:  ${project.build.directory}
         // path will be "../cert/target/classes"
-        String path = args[0] + File.separator + "classes" + File.separator;
+        String path = PathUtil.getTargetPath(CertGenerator.class) + File.separator + "classes" + File.separator;
 
         String serverAlias = "server";
         String clientAlias = "client";

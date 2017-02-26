@@ -3,6 +3,7 @@ package test.client;
 
 import com.caucho.hessian.client.HessianProxyFactory;
 import setup.Constants;
+import setup.PathUtil;
 import test.api.FooService;
 
 import javax.net.ssl.HostnameVerifier;
@@ -13,6 +14,7 @@ public class FooClient {
 
     public static void main(String[] args) throws Exception {
 
+        String target = PathUtil.getTargetPath(FooClient.class);
         HessianProxyFactory proxyFactory = new HessianProxyFactory();
         FooService service;
 
@@ -24,7 +26,7 @@ public class FooClient {
             // http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html
 
             System.setProperty("java.protocol.handler.pkgs", "javax.net.ssl");
-            System.setProperty("javax.net.ssl.trustStore", "cert/target/classes/clientTrust.jks");
+            System.setProperty("javax.net.ssl.trustStore", target + "../../cert/target/classes/clientTrust.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", Constants.TLS_CLIENT_TRUST_PASS);
             System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
             System.setProperty("https.protocols", "TLSv1.2");

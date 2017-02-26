@@ -8,9 +8,11 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
 import setup.Constants;
+import setup.PathUtil;
 
 import javax.servlet.Servlet;
 import java.io.File;
+import java.net.URLDecoder;
 
 /**
  * start server as embedded tomcat
@@ -19,10 +21,12 @@ public class TomcatMain {
 
     public static void main(String[] args) throws Exception {
 
+        String target = PathUtil.getTargetPath(TomcatMain.class);
+        String keyPath = target + "../../cert/target/classes/";
+
         Tomcat tomcat = new Tomcat();
         // needed for "work" dir etc..
-//        tomcat.setBaseDir(System.getProperty("java.io.tmpdir") + File.separator + "tomcat.tmp");
-        tomcat.setBaseDir("./target/tomcat/tmp");
+        tomcat.setBaseDir(target + "tmp");
 
         tomcat.setPort(8080);
 
@@ -41,10 +45,10 @@ public class TomcatMain {
             connector.setAttribute("keystoreType", "JKS");
             // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
             // path is relative to baseDir
-            connector.setAttribute("keystoreFile", "../../../cert/target/classes/serverKey.jks");
+            connector.setAttribute("keystoreFile", keyPath + "serverKey.jks");
             connector.setAttribute("truststorePass", Constants.TLS_SERVER_TRUST_PASS);
             connector.setAttribute("truststoreType", "JKS");
-            connector.setAttribute("truststoreFile", "../../../cert/target/classes/serverTrust.jks");
+            connector.setAttribute("truststoreFile", keyPath + "serverTrust.jks");
             if (useClientCert) {
                 // "Set to true if you want the SSL stack to require a valid
                 // certificate chain from the client before accepting a connection."
@@ -61,7 +65,7 @@ public class TomcatMain {
         }
 
 
-        File docBase = new File("./target/tomcat/docs");  // only needed for "statics", just use working path path for now
+        File docBase = new File(target + "docs");  // only needed for "statics", just use working path path for now
         docBase.mkdirs();
         Context ctx = tomcat.addContext("/app", docBase.getAbsolutePath());
 
