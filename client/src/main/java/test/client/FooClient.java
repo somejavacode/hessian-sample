@@ -1,6 +1,5 @@
 package test.client;
 
-
 import com.caucho.hessian.client.HessianProxyFactory;
 import setup.Constants;
 import setup.PathUtil;
@@ -14,7 +13,6 @@ public class FooClient {
 
     public static void main(String[] args) throws Exception {
 
-        String target = PathUtil.getTargetPath(FooClient.class);
         HessianProxyFactory proxyFactory = new HessianProxyFactory();
         FooService service;
 
@@ -25,8 +23,10 @@ public class FooClient {
             // TODO: not elegant via system properties
             // http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html
 
+            String certPath = PathUtil.getTargetPath(FooClient.class) + "../../cert/target/classes/";
+
             System.setProperty("java.protocol.handler.pkgs", "javax.net.ssl");
-            System.setProperty("javax.net.ssl.trustStore", target + "../../cert/target/classes/clientTrust.jks");
+            System.setProperty("javax.net.ssl.trustStore", certPath + Constants.TLS_CLIENT_TRUST_STORE);
             System.setProperty("javax.net.ssl.trustStorePassword", Constants.TLS_CLIENT_TRUST_PASS);
             System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
             System.setProperty("https.protocols", "TLSv1.2");
@@ -42,7 +42,7 @@ public class FooClient {
             });
 
             if (useClientCert) {
-                System.setProperty("javax.net.ssl.keyStore", "cert/target/classes/clientKey.jks");
+                System.setProperty("javax.net.ssl.keyStore", certPath + Constants.TLS_CLIENT_KEY_STORE);
                 System.setProperty("javax.net.ssl.keyStorePassword", Constants.TLS_CLIENT_KEY_PASS);
             }
             String url = "https://" + Constants.TLS_SERVER_DOMAIN + ":" + Constants.TLS_SERVER_PORT + "/app/foo";

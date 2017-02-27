@@ -12,7 +12,6 @@ import setup.PathUtil;
 
 import javax.servlet.Servlet;
 import java.io.File;
-import java.net.URLDecoder;
 
 /**
  * start server as embedded tomcat
@@ -40,15 +39,15 @@ public class TomcatMain {
             connector.setSecure(true);
             connector.setScheme("https");
             connector.setAttribute("SSLEnabled", true);
-            connector.setAttribute("keyAlias", "server");
+            connector.setAttribute("keyAlias", Constants.TLS_SERVER_KEY_ALIAS);
             connector.setAttribute("keystorePass", Constants.TLS_SERVER_KEY_PASS);
             connector.setAttribute("keystoreType", "JKS");
             // TODO: fix unstable hack. tomcat cannot load this from classpath, why?
-            // path is relative to baseDir
-            connector.setAttribute("keystoreFile", keyPath + "serverKey.jks");
+            connector.setAttribute("keystoreFile", keyPath + Constants.TLS_SERVER_KEY_STORE);
+
             connector.setAttribute("truststorePass", Constants.TLS_SERVER_TRUST_PASS);
             connector.setAttribute("truststoreType", "JKS");
-            connector.setAttribute("truststoreFile", keyPath + "serverTrust.jks");
+            connector.setAttribute("truststoreFile", keyPath + Constants.TLS_SERVER_TRUST_STORE);
             if (useClientCert) {
                 // "Set to true if you want the SSL stack to require a valid
                 // certificate chain from the client before accepting a connection."

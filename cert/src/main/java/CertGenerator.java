@@ -56,12 +56,12 @@ public class CertGenerator {
         // path will be "../cert/target/classes"
         String path = PathUtil.getTargetPath(CertGenerator.class) + File.separator + "classes" + File.separator;
 
-        String serverAlias = "server";
+        String serverAlias = Constants.TLS_SERVER_KEY_ALIAS;
         String clientAlias = "client";
 
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(null, null); // initialize
-        String fileName = path + "serverKey.jks";
+        String fileName = path + Constants.TLS_SERVER_KEY_STORE;
         char[] password = Constants.TLS_SERVER_KEY_PASS.toCharArray();
         // server as key
         keyStore.setKeyEntry(serverAlias, serverPrivate, password, new Certificate[] {server});
@@ -69,7 +69,7 @@ public class CertGenerator {
 
         // client trusts server
         keyStore.load(null, null); // initialize again
-        String fileName2 = path + "clientTrust.jks";
+        String fileName2 = path + Constants.TLS_CLIENT_TRUST_STORE;
         char[] password2 = Constants.TLS_CLIENT_TRUST_PASS.toCharArray();
         // server as certificate
         keyStore.setCertificateEntry(serverAlias, server);
@@ -77,7 +77,7 @@ public class CertGenerator {
 
         if (useClientCert) {
             keyStore.load(null, null); // initialize again
-            String fileName3 = path + "clientKey.jks";
+            String fileName3 = path + Constants.TLS_CLIENT_KEY_STORE;
             char[] password3 = Constants.TLS_CLIENT_KEY_PASS.toCharArray();
             // client as key
             keyStore.setKeyEntry(clientAlias, clientPrivate, password3, new Certificate[] {client});
@@ -85,7 +85,7 @@ public class CertGenerator {
 
             // server trusts client
             keyStore.load(null, null); // initialize again
-            String fileName4 = path + "serverTrust.jks";
+            String fileName4 = path + Constants.TLS_SERVER_TRUST_STORE;
             char[] password4 = Constants.TLS_SERVER_TRUST_PASS.toCharArray();
             // client as key
             keyStore.setCertificateEntry(clientAlias, client);
