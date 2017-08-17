@@ -1,8 +1,7 @@
 package test.server;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,12 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Enumeration;
 import java.util.Locale;
 
 public class LogFilter implements Filter {
 
-    private static final Logger log = Logger.getLogger(LogFilter.class);
+    private static final Logger LOG = LogManager.getLogger(LogFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -59,7 +57,7 @@ public class LogFilter implements Filter {
             StringBuilder msg = new StringBuilder();
             msg.append("request start ").append(method).append(" UA=").append(agent).
                     append(" url=").append(url).append(" remote=").append(remoteAddress);
-            log.info(msg);
+            LOG.info(msg);
             start = System.nanoTime();
 
             chain.doFilter(request, response);
@@ -76,7 +74,7 @@ public class LogFilter implements Filter {
             msg.append("request done ").
                     append(" code=").append(statusCode).
                     append(" time=").append(formatNanos(time)).append("ms");
-            log.info(msg);
+            LOG.info(msg);
         }
     }
 
