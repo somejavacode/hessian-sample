@@ -2,6 +2,9 @@ package setup;
 
 import java.net.URLDecoder;
 
+/**
+ * tool to "estimate" maven "target" path based on compiled class or jar file
+ */
 public class PathUtil {
 
     public static String getTargetPath(Class clazz) throws Exception {

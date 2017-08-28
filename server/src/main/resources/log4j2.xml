@@ -16,6 +16,7 @@
         <Logger name="org.apache.catalina" level="info"/>
         <Logger name="org.apache.catalina.core.ContainerBase" level="debug"/>
         <Logger name="org.apache.tomcat" level="info"/>
+        <Logger name="org.apache.coyote" level="info"/>
 
         <Root level="debug">
             <AppenderRef ref="Console"/>
