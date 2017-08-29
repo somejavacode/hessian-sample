@@ -56,15 +56,15 @@ public class CertGeneratorKT {
 
         if (useClientCert) {
             // make this a CA for chain certificates
-            String ext = useClientCertChain ? " -ext BC:critical=ca:true -ext KU:critical=keyCertSign" : "";
+            // NOTE: this sample is working without this extensions.
+            // String ext = useClientCertChain ? " -ext BC:critical=ca:true -ext KU:critical=keyCertSign" : "";
             invokeKeyTool("-genkeypair" +
                     " -keystore " + path + Constants.TLS_CLIENT_KEY_STORE +
                     " -storepass " + Constants.TLS_CLIENT_KEY_PASS +
                     certGenParam +
                     " -alias " + Constants.TLS_CLIENT_KEY_ALIAS +
                     " -keypass " + Constants.TLS_CLIENT_KEY_PASS +
-                    " -dname CN=client01" +
-                    ext
+                    " -dname CN=client01" // + ext
             );
 
             invokeKeyTool("-exportcert" +
@@ -110,7 +110,7 @@ public class CertGeneratorKT {
                         // " -ext " // do we need an extension?
                 );
 
-                // also import root
+                // import root (otherwise chain import fails with: "Failed to establish chain from reply")
                 invokeKeyTool("-importcert" +
                         " -keystore " + path + Constants.TLS_CLIENT_CHAIN_KEY_STORE +
                         " -storepass " + Constants.TLS_CLIENT_CHAIN_KEY_PASS +
@@ -129,11 +129,6 @@ public class CertGeneratorKT {
                         " -file " + path + Constants.TLS_CLIENT_CHAIN_CERT +
                         " -trustcacerts" +
                         " -noprompt"
-                );
-                // finally list all entries
-                invokeKeyTool("-list" +
-                        " -keystore " + path + Constants.TLS_CLIENT_CHAIN_KEY_STORE +
-                        " -storepass " + Constants.TLS_CLIENT_CHAIN_KEY_PASS
                 );
             }
         }

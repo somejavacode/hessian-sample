@@ -12,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -39,6 +40,16 @@ public class LogFilter implements Filter {
         try {
             req = (HttpServletRequest) request;
             res = (HttpServletResponse) response;
+
+            // see "Java Servlet Specification" Version 3.1: chapter 3.9 "SSL Attributes"
+            // Note: the certificate chain is assumed to be valid.
+            X509Certificate[] certs = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
+            if (certs != null) {
+                for (X509Certificate certificate : certs) {
+                    LOG.info("client cert DN: " + certificate.getSubjectDN());
+                }
+            }
+
             url = req.getRequestURI();
             method = req.getMethod();
             String qs = req.getQueryString();
