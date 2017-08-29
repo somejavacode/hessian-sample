@@ -18,6 +18,7 @@ public class FooClient {
 
         boolean useTLS = args.length > 0;
         boolean useClientCert = args.length > 1;
+        boolean useClientCertChain = args.length > 2;
 
         if (useTLS) {
             // TODO: not elegant via system properties
@@ -42,8 +43,14 @@ public class FooClient {
             });
 
             if (useClientCert) {
-                System.setProperty("javax.net.ssl.keyStore", certPath + Constants.TLS_CLIENT_KEY_STORE);
-                System.setProperty("javax.net.ssl.keyStorePassword", Constants.TLS_CLIENT_KEY_PASS);
+                if (useClientCertChain) {
+                    System.setProperty("javax.net.ssl.keyStore", certPath + Constants.TLS_CLIENT_CHAIN_KEY_STORE);
+                    System.setProperty("javax.net.ssl.keyStorePassword", Constants.TLS_CLIENT_CHAIN_KEY_PASS);
+                }
+                else {
+                    System.setProperty("javax.net.ssl.keyStore", certPath + Constants.TLS_CLIENT_KEY_STORE);
+                    System.setProperty("javax.net.ssl.keyStorePassword", Constants.TLS_CLIENT_KEY_PASS);
+                }
             }
             String url = "https://" + Constants.TLS_SERVER_DOMAIN + ":" + Constants.TLS_SERVER_PORT + "/app/foo";
             service = (FooService) proxyFactory.create(FooService.class, url);

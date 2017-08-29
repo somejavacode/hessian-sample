@@ -29,6 +29,8 @@
                             <arguments>
                                 <!-- enable client certificate with one argument -->
                                 <argument>clientCert</argument>
+                                <!-- enable client chain certificate with two arguments -->
+                                <argument>clientChainCert</argument>
                             </arguments>
                         </configuration>
                     </execution>
